@@ -3,23 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MultiConvert Pro - Enterprise</title>
+    <title>MultiConvert Pro — Nền tảng Chuyển đổi Tài liệu Đa năng</title>
+    <meta name="description" content="MultiConvert Pro - Nền tảng xử lý và chuyển đổi tài liệu đa năng miễn phí. PDF, Word, Excel, Hình ảnh, Video, AI - Tất cả trong một.">
+    <meta name="keywords" content="convert pdf, merge pdf, split pdf, image to pdf, word to pdf, video converter, free tools">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 </head>
 <body>
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- MOBILE MENU TOGGLE -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <i class='bx bx-menu'></i>
+    </button>
+
+    <!-- SIDEBAR OVERLAY (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <div class="app-layout">
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
+        <!-- ═══ SIDEBAR ═══ -->
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <i class='bx bx-analyse logo-icon'></i>
+                <div class="logo-icon"><i class='bx bx-analyse'></i></div>
                 <div class="logo-text">
                     <h2>MultiConvert</h2>
-                    <span>Enterprise</span>
+                    <span>Pro Edition</span>
                 </div>
             </div>
 
@@ -129,7 +142,7 @@
                         <i class='bx bx-git-compare text-blue-dark'></i> <span>So sánh PDF</span>
                     </li>
 
-                    <li class="menu-label">Trí tuệ Nhân tạo (AI Analytics)</li>
+                    <li class="menu-label">Trí tuệ Nhân tạo (AI)</li>
                     <li class="menu-item" data-target="tool" data-tool="ai_summarize" data-title="Tóm tắt tài liệu AI">
                         <i class='bx bx-brain text-purple'></i> <span>Tóm tắt tài liệu AI</span>
                     </li>
@@ -149,7 +162,7 @@
                         <i class='bx bx-microphone text-red'></i> <span>Bóc băng ghi âm (STT)</span>
                     </li>
 
-                    <li class="menu-label">Xử lý Hình ảnh (Image Utils)</li>
+                    <li class="menu-label">Xử lý Hình ảnh</li>
                     <li class="menu-item" data-target="tool" data-tool="img_remove_bg" data-title="Xóa phông nền (AI)">
                         <i class='bx bx-image-alt text-blue-dark'></i> <span>Xóa phông nền</span>
                     </li>
@@ -205,6 +218,9 @@
                     <li class="menu-item" data-target="tool" data-tool="dev_base64" data-title="Base64 Decoder">
                         <i class='bx bx-transfer-alt text-blue'></i> <span>Dịch / Giải mã Base64</span>
                     </li>
+                    <li class="menu-item" data-target="tool" data-tool="dev_checksum" data-title="Tính Checksum MD5/SHA">
+                        <i class='bx bx-fingerprint text-green'></i> <span>Tính Checksum</span>
+                    </li>
 
                     <li class="menu-label">Tái cấu trúc & Dữ liệu</li>
                     <li class="menu-item" data-target="tool" data-tool="json_to_csv" data-title="JSON sang CSV">
@@ -220,11 +236,10 @@
                         <i class='bx bx-layer text-blue-dark'></i> <span>Hợp nhất các Sheet</span>
                     </li>
                 </ul>
-                <div style="height: 30px;"></div>
             </div>
         </aside>
 
-        <!-- MAIN LAYOUT -->
+        <!-- ═══ MAIN LAYOUT ═══ -->
         <main class="main-layout">
             <!-- TOP NAVBAR -->
             <header class="topbar">
@@ -232,16 +247,11 @@
                     <h2 id="topbarTitle">Chuyển đổi Đa Năng</h2>
                 </div>
                 <div class="topbar-actions">
-                    <button class="btn-icon" style="color:var(--success-color); border-color:var(--success-color);" id="btnConnectionStatus" title="Offline Mode - Using Internal JS Engine"><i class='bx bx-wifi-off'></i></button>
-                    <button class="btn-icon"><i class='bx bx-bell'></i><span class="badge"></span></button>
-                    <button class="btn-icon"><i class='bx bx-cog'></i></button>
-                    <div class="user-profile">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=2563EB&color=fff" alt="User">
-                        <div class="user-meta">
-                            <span class="user-name">Quản trị viên</span>
-                            <span class="user-plan">Gói Enterprise</span>
-                        </div>
+                    <div class="connection-badge" id="btnConnectionStatus" title="Trạng thái kết nối Backend">
+                        <i class='bx bx-wifi-off'></i>
+                        <span>Offline Mode</span>
                     </div>
+                    <button class="btn-icon" title="Thông báo"><i class='bx bx-bell'></i><span class="badge"></span></button>
                 </div>
             </header>
 
@@ -253,9 +263,9 @@
                     <div class="welcome-banner">
                         <div class="banner-text">
                             <h1 class="gradient-text">Nền tảng Xử lý Tài liệu Đa năng</h1>
-                            <p>Thiết kế dành riêng cho doanh nghiệp. Kéo thả file của bạn để trải nghiệm tốc độ chuyển đổi và độ chính xác tuyệt đối.</p>
+                            <p>Miễn phí & không cần đăng ký. Kéo thả file để trải nghiệm tốc độ chuyển đổi tuyệt đối với 50+ công cụ chuyên nghiệp.</p>
                         </div>
-                        <img src="https://cdn-icons-png.flaticon.com/512/3218/3218451.png" alt="Illustration" class="banner-img">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3218/3218451.png" alt="MultiConvert Illustration" class="banner-img">
                     </div>
 
                     <div class="converter-board">
@@ -269,11 +279,11 @@
                                 <div class="upload-content">
                                     <div class="icon-pulse-container"><i class='bx bx-cloud-upload'></i></div>
                                     <h3>Kéo thả tài liệu vào đây</h3>
-                                    <p>Hoặc click để duyệt file. Máy chủ nội bộ sẽ xử lý cực nhanh và bảo mật tuyệt đối.</p>
+                                    <p>Hoặc click để duyệt file. Hỗ trợ mọi định dạng — xử lý hoàn toàn miễn phí.</p>
                                 </div>
                             </div>
                             
-                            <!-- Home General Settings (Format Selector) -->
+                            <!-- Home Settings -->
                             <div class="settings-section" id="homeSettings">
                                 <div class="files-preview-list compact" id="homeFilesList"></div>
 
@@ -313,13 +323,13 @@
                             <h2 id="currentToolTitle">Nối PDF</h2>
                         </div>
                         
-                        <div class="converter-card" style="box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                        <div class="converter-card">
                             <div class="upload-section active" id="toolDropzone">
                                 <input type="file" id="toolFileInput" class="file-input" multiple hidden>
                                 <div class="upload-content">
                                     <div class="icon-container"><i class='bx bx-layer-plus'></i></div>
-                                    <h3>Kéo thả tài liệu đặc nhiệm vào đây</h3>
-                                    <p>Máy chủ AI sẽ xử lý yêu cầu của bạn</p>
+                                    <h3>Kéo thả tài liệu vào đây</h3>
+                                    <p>Máy chủ sẽ xử lý yêu cầu của bạn — miễn phí hoàn toàn</p>
                                 </div>
                             </div>
 
@@ -333,17 +343,17 @@
                                     </div>
                                     <div class="option-group" id="opt-password" style="display: none;">
                                         <label>Mật khẩu</label>
-                                        <input type="password" id="inputPdfPassword" class="custom-input">
+                                        <input type="password" id="inputPdfPassword" class="custom-input" placeholder="Nhập mật khẩu...">
                                     </div>
                                     <div class="option-group" id="opt-watermark" style="display: none;">
                                         <label>Nội dung bản quyền</label>
-                                        <input type="text" id="inputWatermarkText" class="custom-input">
+                                        <input type="text" id="inputWatermarkText" class="custom-input" placeholder="MultiConvert Pro">
                                     </div>
                                 </div>
 
                                 <div class="action-footer">
                                     <button class="btn-secondary" id="btnToolClear">Làm lại</button>
-                                    <button class="btn-primary" id="btnToolProcess">Thực thi ngay</button>
+                                    <button class="btn-primary" id="btnToolProcess">Thực thi ngay <i class='bx bx-chevron-right'></i></button>
                                 </div>
                             </div>
 
