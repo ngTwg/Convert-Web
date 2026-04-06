@@ -81,13 +81,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentToolTitle.textContent = titleStr;
                 
                 [optRanges, optPassword, optWatermark].forEach(el => el.style.display = 'none');
-                if (['split', 'remove_pages', 'extract'].includes(currentActiveTool)) optRanges.style.display = 'block';
+                if (['split', 'remove_pages', 'extract', 'media_trim'].includes(currentActiveTool)) optRanges.style.display = 'block';
                 if (['protect', 'unlock'].includes(currentActiveTool)) optPassword.style.display = 'block';
                 if (['watermark', 'img_watermark', 'qr_generator'].includes(currentActiveTool)) {
                     optWatermark.style.display = 'block';
                     const lbl = optWatermark.querySelector('label');
                     if(currentActiveTool === 'qr_generator') lbl.textContent = "Dữ liệu mã QR (Link/Text)";
                     else lbl.textContent = "Nội dung bản quyền (Watermark Text)";
+                }
+
+                if (currentActiveTool === 'media_trim') {
+                    const lbl = optRanges.querySelector('label');
+                    lbl.textContent = "Khoảng thời gian cắt (Giây, vd: 10-30)";
+                } else if (optRanges.style.display !== 'none') {
+                    const lbl = optRanges.querySelector('label');
+                    lbl.textContent = "Khoảng trang cắt (Ví dụ: 1-5)";
                 }
                 
                 clearToolFiles();
@@ -231,7 +239,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 tDesc.textContent = "Đang gửi dữ liệu tới Backend API...";
-                const response = await fetch("https://convert-api-pw18.onrender.com/api/process", {
+                
+                // Smart API Routing (Local if App, Cloud if Web)
+                const isLocalApp = window.location.protocol === 'file:';
+                const apiUrl = isLocalApp 
+                    ? "http://127.0.0.1:58085/api/process" 
+                    : "https://convert-api-pw18.onrender.com/api/process";
+
+                const response = await fetch(apiUrl, {
                     method: "POST",
                     body: formData
                 });
